@@ -1,21 +1,23 @@
 #if UNITY_2017_1_OR_NEWER
-using PlayFab.PfEditor;
 using UnityEditor;
 using UnityEngine;
 
-public class MakeScriptableObject
+namespace PlayFab
 {
-    [MenuItem("PlayFab/MakePlayFabSharedSettings")]
-    public static void MakePlayFabSharedSettings()
+    public class MakeScriptableObject
     {
-        PlayFabSharedSettings asset = ScriptableObject.CreateInstance<PlayFabSharedSettings>();
+        [MenuItem("PlayFab/MakePlayFabSharedSettings")]
+        public static void MakePlayFabSharedSettings()
+        {
+            PlayFabSharedSettings asset = ScriptableObject.CreateInstance<PlayFabSharedSettings>();
 
-        AssetDatabase.CreateAsset(asset, "Assets/PlayFabSdk/Shared/Public/Resources/PlayFabSharedSettings.asset"); // TODO: Path should not be hard coded
-        AssetDatabase.SaveAssets();
+            AssetDatabase.CreateAsset(asset, "Assets/PlayFabSdk/Shared/Public/Resources/PlayFabSharedSettings.asset"); // TODO: Path should not be hard coded
+            AssetDatabase.SaveAssets();
 
-        EditorUtility.FocusProjectWindow();
+            EditorUtility.FocusProjectWindow();
 
-        Selection.activeObject = asset;
+            Selection.activeObject = asset;
+        }
     }
 }
 #endif

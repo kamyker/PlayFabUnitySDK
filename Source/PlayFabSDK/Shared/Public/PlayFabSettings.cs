@@ -1,31 +1,13 @@
 using PlayFab.Internal;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
+[assembly: InternalsVisibleTo("PlayFabSdkRepo")]
 namespace PlayFab
 {
-    public enum WebRequestType
-    {
-#if !UNITY_2018_2_OR_NEWER // Unity has deprecated Www
-        UnityWww, // High compatability Unity api calls
-#endif
-        UnityWebRequest, // Modern unity HTTP component
-        HttpWebRequest, // High performance multi-threaded api calls
-        CustomHttp //If this is used, you must set the Http to an IPlayFabHttp object.
-    }
-
-    [Flags]
-    public enum PlayFabLogLevel
-    {
-        None = 0,
-        Debug = 1 << 0,
-        Info = 1 << 1,
-        Warning = 1 << 2,
-        Error = 1 << 3,
-        All = Debug | Info | Warning | Error,
-    }
 
     public static class PlayFabSettings
     {

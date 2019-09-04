@@ -20,3 +20,6 @@ to `dependencies`
 This is how project looks like with this fork:
 
 ![project](https://raw.githubusercontent.com/kamyker/PlayFabUnityEditorExtensions/master/_repoAssets/img/EdEx_Project.png "Title")
+
+
+This sdk is generated with https://github.com/kamyker/PlayFabSDKGenerator unity-package-manager.bat

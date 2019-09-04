@@ -1,0 +1,7 @@
+{
+  "name": "com.playfab.sdk",
+  "version": "2.71.190821",
+  "displayName": "PlayFab SDK",
+  "description": "PlayFab SDK",
+  "unity": "2019.1"
+}

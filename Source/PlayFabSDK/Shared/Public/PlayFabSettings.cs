@@ -14,7 +14,7 @@ namespace PlayFab
         static PlayFabSettings() { }
 
         private static PlayFabSharedSettings _playFabShared = null;
-        private static PlayFabSharedSettings PlayFabSharedPrivate { get { if (_playFabShared == null) _playFabShared = GetSharedSettingsObjectPrivate(); return _playFabShared; } }
+        private static PlayFabSharedSettings PlayFabSharedPrivate { get { if (_playFabShared == null) _playFabShared = PlayFabSharedSettings.LoadFromResources(); return _playFabShared; } }
         internal static readonly PlayFabApiSettings staticSettings = new PlayFabSettingsRedirect(() => { return PlayFabSharedPrivate; });
 
         // This field will likely be removed someday
@@ -27,16 +27,6 @@ namespace PlayFab
         public const string AD_TYPE_ANDROID_ID = "Adid";
 
         internal const string DefaultPlayFabApiUrl = "playfabapi.com";
-
-        private static PlayFabSharedSettings GetSharedSettingsObjectPrivate()
-        {
-            var settingsList = Resources.LoadAll<PlayFabSharedSettings>("PlayFabSharedSettings");
-            if (settingsList.Length != 1)
-            {
-                throw new Exception("The number of PlayFabSharedSettings objects should be 1: " + settingsList.Length);
-            }
-            return settingsList[0];
-        }
 
         public static string DeviceUniqueIdentifier
         {

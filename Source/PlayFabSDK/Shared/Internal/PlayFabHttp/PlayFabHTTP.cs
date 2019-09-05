@@ -146,7 +146,6 @@ namespace PlayFab.Internal
             var fullUrl = apiSettings.GetFullUrl(apiEndpoint, apiSettings.RequestGetParams);
             _MakeApiCall(apiEndpoint, fullUrl, request, authType, (TResult a) => tcs.SetResult(a), error =>
             {
-                Debug.LogError(error.ErrorMessage);
                 Debug.LogError(error.GenerateErrorReport());
                 tcs.SetException(error);
             }, customData, extraHeaders, false, authenticationContext, apiSettings, instanceApi);

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using PlayFab.LocalizationModels;
 using PlayFab.Internal;
+using System.Threading.Tasks;
 
 namespace PlayFab
 {
@@ -32,15 +33,22 @@ namespace PlayFab
             PlayFabSettings.staticPlayer.ForgetAllCredentials();
         }
 
+        private static PlayFabAuthenticationContext GetContext(SharedModels.PlayFabRequestCommon request) => (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+
         /// <summary>
         /// Retrieves the list of allowed languages, only accessible by title entities
         /// </summary>
-        public static void GetLanguageList(GetLanguageListRequest request, Action<GetLanguageListResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<GetLanguageListResponse> GetLanguageList(
+            GetLanguageListRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new GetLanguageListRequest();
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Locale/GetLanguageList", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<GetLanguageListResponse>("/Locale/GetLanguageList", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
 

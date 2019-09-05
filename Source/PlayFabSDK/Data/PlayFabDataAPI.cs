@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using PlayFab.DataModels;
 using PlayFab.Internal;
+using System.Threading.Tasks;
 
 namespace PlayFab
 {
@@ -35,81 +36,152 @@ namespace PlayFab
             PlayFabSettings.staticPlayer.ForgetAllCredentials();
         }
 
+        private static PlayFabAuthenticationContext GetContext(SharedModels.PlayFabRequestCommon request) => (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+
         /// <summary>
         /// Abort pending file uploads to an entity's profile.
         /// </summary>
-        public static void AbortFileUploads(AbortFileUploadsRequest request, Action<AbortFileUploadsResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<AbortFileUploadsResponse> AbortFileUploads(EntityKey Entity, List<string> FileNames, int? ProfileVersion = default, 
+            AbortFileUploadsRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new AbortFileUploadsRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+            if(FileNames != default)
+                request.FileNames = FileNames;
+            if(ProfileVersion != default)
+                request.ProfileVersion = ProfileVersion;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/File/AbortFileUploads", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<AbortFileUploadsResponse>("/File/AbortFileUploads", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Delete files on an entity's profile.
         /// </summary>
-        public static void DeleteFiles(DeleteFilesRequest request, Action<DeleteFilesResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<DeleteFilesResponse> DeleteFiles(EntityKey Entity, List<string> FileNames, int? ProfileVersion = default, 
+            DeleteFilesRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new DeleteFilesRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+            if(FileNames != default)
+                request.FileNames = FileNames;
+            if(ProfileVersion != default)
+                request.ProfileVersion = ProfileVersion;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/File/DeleteFiles", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<DeleteFilesResponse>("/File/DeleteFiles", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Finalize file uploads to an entity's profile.
         /// </summary>
-        public static void FinalizeFileUploads(FinalizeFileUploadsRequest request, Action<FinalizeFileUploadsResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<FinalizeFileUploadsResponse> FinalizeFileUploads(EntityKey Entity, List<string> FileNames, 
+            FinalizeFileUploadsRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new FinalizeFileUploadsRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+            if(FileNames != default)
+                request.FileNames = FileNames;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/File/FinalizeFileUploads", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<FinalizeFileUploadsResponse>("/File/FinalizeFileUploads", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Retrieves file metadata from an entity's profile.
         /// </summary>
-        public static void GetFiles(GetFilesRequest request, Action<GetFilesResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<GetFilesResponse> GetFiles(EntityKey Entity, 
+            GetFilesRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new GetFilesRequest();
+            if(Entity != default)
+                request.Entity = Entity;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/File/GetFiles", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<GetFilesResponse>("/File/GetFiles", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Retrieves objects from an entity's profile.
         /// </summary>
-        public static void GetObjects(GetObjectsRequest request, Action<GetObjectsResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<GetObjectsResponse> GetObjects(EntityKey Entity, bool? EscapeObject = default, 
+            GetObjectsRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new GetObjectsRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+            if(EscapeObject != default)
+                request.EscapeObject = EscapeObject;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Object/GetObjects", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<GetObjectsResponse>("/Object/GetObjects", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Initiates file uploads to an entity's profile.
         /// </summary>
-        public static void InitiateFileUploads(InitiateFileUploadsRequest request, Action<InitiateFileUploadsResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<InitiateFileUploadsResponse> InitiateFileUploads(EntityKey Entity, List<string> FileNames, int? ProfileVersion = default, 
+            InitiateFileUploadsRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new InitiateFileUploadsRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+            if(FileNames != default)
+                request.FileNames = FileNames;
+            if(ProfileVersion != default)
+                request.ProfileVersion = ProfileVersion;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/File/InitiateFileUploads", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<InitiateFileUploadsResponse>("/File/InitiateFileUploads", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Sets objects on an entity's profile.
         /// </summary>
-        public static void SetObjects(SetObjectsRequest request, Action<SetObjectsResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<SetObjectsResponse> SetObjects(EntityKey Entity, List<SetObject> Objects, int? ExpectedProfileVersion = default, 
+            SetObjectsRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new SetObjectsRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+            if(Objects != default)
+                request.Objects = Objects;
+            if(ExpectedProfileVersion != default)
+                request.ExpectedProfileVersion = ExpectedProfileVersion;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Object/SetObjects", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<SetObjectsResponse>("/Object/SetObjects", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
 

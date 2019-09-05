@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using PlayFab.CloudScriptModels;
 using PlayFab.Internal;
+using System.Threading.Tasks;
 
 namespace PlayFab
 {
@@ -32,16 +33,35 @@ namespace PlayFab
             PlayFabSettings.staticPlayer.ForgetAllCredentials();
         }
 
+        private static PlayFabAuthenticationContext GetContext(SharedModels.PlayFabRequestCommon request) => (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+
         /// <summary>
         /// Cloud Script is one of PlayFab's most versatile features. It allows client code to request execution of any kind of
         /// custom server-side functionality you can implement, and it can be used in conjunction with virtually anything.
         /// </summary>
-        public static void ExecuteEntityCloudScript(ExecuteEntityCloudScriptRequest request, Action<ExecuteCloudScriptResult> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<ExecuteCloudScriptResult> ExecuteEntityCloudScript(string FunctionName, EntityKey Entity = default, object FunctionParameter = default, bool? GeneratePlayStreamEvent = default, CloudScriptRevisionOption? RevisionSelection = default, int? SpecificRevision = default, 
+            ExecuteEntityCloudScriptRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new ExecuteEntityCloudScriptRequest();
+            if(FunctionName != default)
+                request.FunctionName = FunctionName;
+            if(Entity != default)
+                request.Entity = Entity;
+            if(FunctionParameter != default)
+                request.FunctionParameter = FunctionParameter;
+            if(GeneratePlayStreamEvent != default)
+                request.GeneratePlayStreamEvent = GeneratePlayStreamEvent;
+            if(RevisionSelection != default)
+                request.RevisionSelection = RevisionSelection;
+            if(SpecificRevision != default)
+                request.SpecificRevision = SpecificRevision;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/CloudScript/ExecuteEntityCloudScript", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<ExecuteCloudScriptResult>("/CloudScript/ExecuteEntityCloudScript", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
 

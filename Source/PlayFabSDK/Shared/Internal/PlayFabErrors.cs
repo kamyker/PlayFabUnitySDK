@@ -548,7 +548,7 @@ namespace PlayFab
         SnapshotNotFound = 11000
     }
 
-    public class PlayFabError
+    public class PlayFabError : Exception
     {
         public string ApiEndpoint;
         public int HttpCode;

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using PlayFab.EventsModels;
 using PlayFab.Internal;
+using System.Threading.Tasks;
 
 namespace PlayFab
 {
@@ -33,26 +34,42 @@ namespace PlayFab
             PlayFabSettings.staticPlayer.ForgetAllCredentials();
         }
 
+        private static PlayFabAuthenticationContext GetContext(SharedModels.PlayFabRequestCommon request) => (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+
         /// <summary>
         /// Write batches of entity based events to PlayStream.
         /// </summary>
-        public static void WriteEvents(WriteEventsRequest request, Action<WriteEventsResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<WriteEventsResponse> WriteEvents(List<EventContents> Events, 
+            WriteEventsRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new WriteEventsRequest();
+            if(Events != default)
+                request.Events = Events;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Event/WriteEvents", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<WriteEventsResponse>("/Event/WriteEvents", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Write batches of entity based events to as Telemetry events (bypass PlayStream).
         /// </summary>
-        public static void WriteTelemetryEvents(WriteEventsRequest request, Action<WriteEventsResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<WriteEventsResponse> WriteTelemetryEvents(List<EventContents> Events, 
+            WriteEventsRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new WriteEventsRequest();
+            if(Events != default)
+                request.Events = Events;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Event/WriteTelemetryEvents", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<WriteEventsResponse>("/Event/WriteTelemetryEvents", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
 

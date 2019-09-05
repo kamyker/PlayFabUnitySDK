@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using PlayFab.AuthenticationModels;
 using PlayFab.Internal;
+using System.Threading.Tasks;
 
 namespace PlayFab
 {
@@ -34,13 +35,21 @@ namespace PlayFab
             PlayFabSettings.staticPlayer.ForgetAllCredentials();
         }
 
+        private static PlayFabAuthenticationContext GetContext(SharedModels.PlayFabRequestCommon request) => (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+
         /// <summary>
         /// Method to exchange a legacy AuthenticationTicket or title SecretKey for an Entity Token or to refresh a still valid
         /// Entity Token.
         /// </summary>
-        public static void GetEntityToken(GetEntityTokenRequest request, Action<GetEntityTokenResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<GetEntityTokenResponse> GetEntityToken(EntityKey Entity = default, 
+            GetEntityTokenRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new GetEntityTokenRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+
+            var context = GetContext(request);
             AuthType authType = AuthType.None;
 #if !DISABLE_PLAYFABCLIENT_API
             if (context.ClientSessionTicket != null) { authType = AuthType.LoginSession; }
@@ -52,19 +61,27 @@ namespace PlayFab
             if (context.EntityToken != null) { authType = AuthType.EntityToken; }
 #endif
 
-
-            PlayFabHttp.MakeApiCall("/Authentication/GetEntityToken", request, authType, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<GetEntityTokenResponse>("/Authentication/GetEntityToken", request,
+				authType,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Method for a server to validate a client provided EntityToken. Only callable by the title entity.
         /// </summary>
-        public static void ValidateEntityToken(ValidateEntityTokenRequest request, Action<ValidateEntityTokenResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<ValidateEntityTokenResponse> ValidateEntityToken(string EntityToken, 
+            ValidateEntityTokenRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new ValidateEntityTokenRequest();
+            if(EntityToken != default)
+                request.EntityToken = EntityToken;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Authentication/ValidateEntityToken", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<ValidateEntityTokenResponse>("/Authentication/ValidateEntityToken", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
 

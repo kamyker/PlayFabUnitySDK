@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using PlayFab.ProfilesModels;
 using PlayFab.Internal;
+using System.Threading.Tasks;
 
 namespace PlayFab
 {
@@ -33,82 +34,143 @@ namespace PlayFab
             PlayFabSettings.staticPlayer.ForgetAllCredentials();
         }
 
+        private static PlayFabAuthenticationContext GetContext(SharedModels.PlayFabRequestCommon request) => (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+
         /// <summary>
         /// Gets the global title access policy
         /// </summary>
-        public static void GetGlobalPolicy(GetGlobalPolicyRequest request, Action<GetGlobalPolicyResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<GetGlobalPolicyResponse> GetGlobalPolicy(
+            GetGlobalPolicyRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new GetGlobalPolicyRequest();
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Profile/GetGlobalPolicy", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<GetGlobalPolicyResponse>("/Profile/GetGlobalPolicy", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Retrieves the entity's profile.
         /// </summary>
-        public static void GetProfile(GetEntityProfileRequest request, Action<GetEntityProfileResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<GetEntityProfileResponse> GetProfile(bool? DataAsObject = default, EntityKey Entity = default, 
+            GetEntityProfileRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new GetEntityProfileRequest();
+            if(DataAsObject != default)
+                request.DataAsObject = DataAsObject;
+            if(Entity != default)
+                request.Entity = Entity;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Profile/GetProfile", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<GetEntityProfileResponse>("/Profile/GetProfile", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Retrieves the entity's profile.
         /// </summary>
-        public static void GetProfiles(GetEntityProfilesRequest request, Action<GetEntityProfilesResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<GetEntityProfilesResponse> GetProfiles(List<EntityKey> Entities, bool? DataAsObject = default, 
+            GetEntityProfilesRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new GetEntityProfilesRequest();
+            if(Entities != default)
+                request.Entities = Entities;
+            if(DataAsObject != default)
+                request.DataAsObject = DataAsObject;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Profile/GetProfiles", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<GetEntityProfilesResponse>("/Profile/GetProfiles", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Retrieves the title player accounts associated with the given master player account.
         /// </summary>
-        public static void GetTitlePlayersFromMasterPlayerAccountIds(GetTitlePlayersFromMasterPlayerAccountIdsRequest request, Action<GetTitlePlayersFromMasterPlayerAccountIdsResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<GetTitlePlayersFromMasterPlayerAccountIdsResponse> GetTitlePlayersFromMasterPlayerAccountIds(List<string> MasterPlayerAccountIds, string TitleId = default, 
+            GetTitlePlayersFromMasterPlayerAccountIdsRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new GetTitlePlayersFromMasterPlayerAccountIdsRequest();
+            if(MasterPlayerAccountIds != default)
+                request.MasterPlayerAccountIds = MasterPlayerAccountIds;
+            if(TitleId != default)
+                request.TitleId = TitleId;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Profile/GetTitlePlayersFromMasterPlayerAccountIds", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<GetTitlePlayersFromMasterPlayerAccountIdsResponse>("/Profile/GetTitlePlayersFromMasterPlayerAccountIds", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Sets the global title access policy
         /// </summary>
-        public static void SetGlobalPolicy(SetGlobalPolicyRequest request, Action<SetGlobalPolicyResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<SetGlobalPolicyResponse> SetGlobalPolicy(List<EntityPermissionStatement> Permissions = default, 
+            SetGlobalPolicyRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new SetGlobalPolicyRequest();
+            if(Permissions != default)
+                request.Permissions = Permissions;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Profile/SetGlobalPolicy", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<SetGlobalPolicyResponse>("/Profile/SetGlobalPolicy", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Updates the entity's language. The precedence hierarchy for communication to the player is Title Player Account
         /// language, Master Player Account language, and then title default language if the first two aren't set or supported.
         /// </summary>
-        public static void SetProfileLanguage(SetProfileLanguageRequest request, Action<SetProfileLanguageResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<SetProfileLanguageResponse> SetProfileLanguage(EntityKey Entity = default, int? ExpectedVersion = default, string Language = default, 
+            SetProfileLanguageRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new SetProfileLanguageRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+            if(ExpectedVersion != default)
+                request.ExpectedVersion = ExpectedVersion;
+            if(Language != default)
+                request.Language = Language;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Profile/SetProfileLanguage", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<SetProfileLanguageResponse>("/Profile/SetProfileLanguage", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
         /// <summary>
         /// Sets the profiles access policy
         /// </summary>
-        public static void SetProfilePolicy(SetEntityProfilePolicyRequest request, Action<SetEntityProfilePolicyResponse> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null)
+        public static Task<SetEntityProfilePolicyResponse> SetProfilePolicy(EntityKey Entity, List<EntityPermissionStatement> Statements = default, 
+            SetEntityProfilePolicyRequest request = default, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            var context = (request == null ? null : request.AuthenticationContext) ?? PlayFabSettings.staticPlayer;
+            if(request == null)
+                request = new SetEntityProfilePolicyRequest();
+            if(Entity != default)
+                request.Entity = Entity;
+            if(Statements != default)
+                request.Statements = Statements;
 
+            var context = GetContext(request);
 
-            PlayFabHttp.MakeApiCall("/Profile/SetProfilePolicy", request, AuthType.EntityToken, resultCallback, errorCallback, customData, extraHeaders, context);
+            return PlayFabHttp.MakeApiCallAsync<SetEntityProfilePolicyResponse>("/Profile/SetProfilePolicy", request,
+				AuthType.EntityToken,
+				customData, extraHeaders, context);
         }
 
 

@@ -555,13 +555,17 @@ namespace PlayFab
         public string HttpStatus;
         public PlayFabErrorCode Error;
         public string ErrorMessage;
-        public Dictionary<string, List<string> > ErrorDetails;
+        public Dictionary<string, List<string>> ErrorDetails;
         public object CustomData;
+        public override string Message => GenerateErrorReport();
 
-        public override string ToString() {
+        public override string ToString()
+        {
             var sb = new System.Text.StringBuilder();
-            if (ErrorDetails != null) {
-                foreach (var kv in ErrorDetails) {
+            if (ErrorDetails != null)
+            {
+                foreach (var kv in ErrorDetails)
+                {
                     sb.Append(kv.Key);
                     sb.Append(": ");
                     sb.Append(string.Join(", ", kv.Value.ToArray()));
@@ -573,7 +577,7 @@ namespace PlayFab
 
         [ThreadStatic]
         private static StringBuilder _tempSb;
-         /// <summary>
+        /// <summary>
         /// This converts the PlayFabError into a human readable string describing the error.
         /// If error is not found, it will return the http code, status, and error
         /// </summary>

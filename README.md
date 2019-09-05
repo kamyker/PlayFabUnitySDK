@@ -1,6 +1,6 @@
-# UnitySDK README
+# PlayFabUnitySDK README
 
-## Fork with Package Manager and Assembly Definitions support
+## Fork with Package Manager and Assembly Definitions, async/await support and more
 Go here: [EditorExtensions plugin](https://github.com/kamyker/PlayFabUnityEditorExtensions).
 
 If you really don't need EditorExtensions - sdk may work without it:

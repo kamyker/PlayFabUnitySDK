@@ -81,73 +81,73 @@ namespace PlayFab.Public
         /// <param name="isFocused">State of focus</param>
         public void OnApplicationFocus(bool isFocused)
         {
-            EventsModels.EventContents eventInfo = new EventsModels.EventContents();
-            DateTime currentUtcDateTime = DateTime.UtcNow;
+            //EventsModels.EventContents eventInfo = new EventsModels.EventContents();
+            //DateTime currentUtcDateTime = DateTime.UtcNow;
 
-            eventInfo.Name = "client_focus_change";
-            eventInfo.EventNamespace = eventNamespace;
-            eventInfo.Entity = entityKey;
+            //eventInfo.Name = "client_focus_change";
+            //eventInfo.EventNamespace = eventNamespace;
+            //eventInfo.Entity = entityKey;
 
-            double focusStateDuration = 0.0;
+            //double focusStateDuration = 0.0;
 
-            if (initialFocus)
-            {
-                focusId = Guid.NewGuid();
-            }
+            //if (initialFocus)
+            //{
+            //    focusId = Guid.NewGuid();
+            //}
 
-            if (isFocused)
-            {
-                // start counting focus-on time
-                focusOnDateTime = currentUtcDateTime;
+            //if (isFocused)
+            //{
+            //    // start counting focus-on time
+            //    focusOnDateTime = currentUtcDateTime;
 
-                // new id per focus
-                focusId = Guid.NewGuid();
+            //    // new id per focus
+            //    focusId = Guid.NewGuid();
 
-                if (!initialFocus)
-                {
-                    focusStateDuration = (currentUtcDateTime - focusOffDateTime).TotalSeconds;
+            //    if (!initialFocus)
+            //    {
+            //        focusStateDuration = (currentUtcDateTime - focusOffDateTime).TotalSeconds;
 
-                    // this check safeguards from manual time changes while app is running
-                    if (focusStateDuration < 0)
-                    {
-                        focusStateDuration = 0;
-                    }
-                }
-            }
-            else
-            {
-                focusStateDuration = (currentUtcDateTime - focusOnDateTime).TotalSeconds;
+            //        // this check safeguards from manual time changes while app is running
+            //        if (focusStateDuration < 0)
+            //        {
+            //            focusStateDuration = 0;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    focusStateDuration = (currentUtcDateTime - focusOnDateTime).TotalSeconds;
 
-                // this check safeguards from manual time changes while app is running
-                if (focusStateDuration < 0)
-                {
-                    focusStateDuration = 0;
-                }
+            //    // this check safeguards from manual time changes while app is running
+            //    if (focusStateDuration < 0)
+            //    {
+            //        focusStateDuration = 0;
+            //    }
 
-                // start counting focus-off time
-                focusOffDateTime = currentUtcDateTime;
-            }
+            //    // start counting focus-off time
+            //    focusOffDateTime = currentUtcDateTime;
+            //}
 
-            var payload = new Dictionary<string, object> {
-                    { "FocusID", focusId },
-                    { "FocusState", isFocused },
-                    { "FocusStateDuration", focusStateDuration },
-                    { "EventTimestamp", currentUtcDateTime },
-                    { "ClientSessionID", gameSessionID },
-                };
+            //var payload = new Dictionary<string, object> {
+            //        { "FocusID", focusId },
+            //        { "FocusState", isFocused },
+            //        { "FocusStateDuration", focusStateDuration },
+            //        { "EventTimestamp", currentUtcDateTime },
+            //        { "ClientSessionID", gameSessionID },
+            //    };
 
-            eventInfo.OriginalTimestamp = currentUtcDateTime;
-            eventInfo.Payload = payload;
-            eventsRequests.Enqueue(eventInfo);
+            //eventInfo.OriginalTimestamp = currentUtcDateTime;
+            //eventInfo.Payload = payload;
+            //eventsRequests.Enqueue(eventInfo);
 
-            initialFocus = false;
+            //initialFocus = false;
 
-            if (!isFocused)
-            {
-                // Force the eventsRequests queue to empty.
-                // If we are losing focus we should make an attempt to push out a focus lost event ASAP
-                Send();
-            }
+            //if (!isFocused)
+            //{
+            //    // Force the eventsRequests queue to empty.
+            //    // If we are losing focus we should make an attempt to push out a focus lost event ASAP
+            //    Send();
+            //}
 
         }
 

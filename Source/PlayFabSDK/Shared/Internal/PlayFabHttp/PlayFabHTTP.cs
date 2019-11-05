@@ -63,7 +63,7 @@ namespace PlayFab.Internal
             if (transport.IsInitialized)
                 return;
 
-            Application.runInBackground = true; // Http requests respond even if you lose focus
+            //Application.runInBackground = true; // Http requests respond even if you lose focus
 
             transport.Initialize();
             CreateInstance(); // Invoke the SingletonMonoBehaviour
@@ -343,28 +343,28 @@ namespace PlayFab.Internal
         /// <summary>
         /// MonoBehaviour OnApplicationFocus
         /// </summary>
-        public void OnApplicationFocus(bool isFocused)
-        {
-#if !DISABLE_PLAYFABENTITY_API && !DISABLE_PLAYFABCLIENT_API
-            if ((screenTimeTracker != null) && !PlayFabSettings.DisableFocusTimeCollection)
-            {
-                screenTimeTracker.OnApplicationFocus(isFocused);
-            }
-#endif
-        }
+        //        public void OnApplicationFocus(bool isFocused)
+        //        {
+        //#if !DISABLE_PLAYFABENTITY_API && !DISABLE_PLAYFABCLIENT_API
+        //            if ((screenTimeTracker != null) && !PlayFabSettings.DisableFocusTimeCollection)
+        //            {
+        //                screenTimeTracker.OnApplicationFocus(isFocused);
+        //            }
+        //#endif
+        //        }
 
         /// <summary>
         /// MonoBehaviour OnApplicationQuit
         /// </summary>
-        public void OnApplicationQuit()
-        {
-#if !DISABLE_PLAYFABENTITY_API && !DISABLE_PLAYFABCLIENT_API
-            if ((screenTimeTracker != null) && !PlayFabSettings.DisableFocusTimeCollection)
-            {
-                screenTimeTracker.OnApplicationQuit();
-            }
-#endif
-        }
+        //        public void OnApplicationQuit()
+        //        {
+        //#if !DISABLE_PLAYFABENTITY_API && !DISABLE_PLAYFABCLIENT_API
+        //            if ((screenTimeTracker != null) && !PlayFabSettings.DisableFocusTimeCollection)
+        //            {
+        //                screenTimeTracker.OnApplicationQuit();
+        //            }
+        //#endif
+        //        }
 
         /// <summary>
         /// MonoBehaviour Update
